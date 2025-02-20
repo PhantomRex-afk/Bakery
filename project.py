@@ -22,7 +22,36 @@ def L():
     username=User.get()
     password=Pass.get()
     if username in account and account[username]==password:
-        messagebox.showinfo('Login','Login was successful <3')
+        P3=Toplevel()
+        P3.geometry("400x250")
+        P3.title('Verification')
+        Label(P3,text="Who's logging in?").pack()
+        def V():
+            messagebox.showinfo('Verification','Login was successful <3')
+            P3.destroy()
+        def V1():
+            P4=Toplevel()
+            P4.geometry("400x250")
+            P4.title('Verification')
+            Label(P4,text="Enter PIN :").pack()
+            pin=Entry(P4)
+            pin.pack()
+            P3.destroy()
+            def Pin():
+                if pin.get() == '12345':
+                    messagebox.showinfo('Verification','Login was successful <3')
+                    P4.destroy()
+
+
+                else:
+                    messagebox.showerror('Verification','Invalid PIN </3')
+            Enter=Button(P4,text='Enter',command=Pin)
+            Enter.pack()
+        Customer=Button(P3,text='Customer',command=V)
+        Customer.pack()
+        Employee=Button(P3,text='Employee',command=V1)
+        Employee.pack()
+        
     elif username == "" or password == "":
         messagebox.showerror('Login','Please enter both username and password [:')
     else:
@@ -110,40 +139,5 @@ Register=Button(P,text="Register Now!",command=R)
 Register.place(x=263,y=103)
 # Make a new account
 
-def F():
-    P3=Toplevel()
-    P3.geometry("400x250")
-    P3.title('Change Password')
-    rand=random.randint(1,3)
-    if rand == 1:
-        Label(P3,text='-> What is your favorite food?').pack()
-    elif rand == 2:
-        Label(P3,text='-> What is your favorite animal?').pack()
-    else:
-        Label(P3,text='-> What is your favorite color?').pack()
-    e=Entry(P3)
-    e.pack()
-    def Done():
-        if e.get()==ff.get() or e.get()==fa.get() or e.get()==fc.get():
-            P3.destroy()
-            messagebox.showinfo('Verification Complete')
-            P4=Toplevel()
-            Label(P4,text='Reset Password').pack()
-            Rp=Entry(P4)
-            Rp.pack()
-            Label(P4,text='Confirm Password').pack()
-            Cp=Entry(P4)
-            Cp.pack()
-            def Done1():
-                if Rp.get()==Cp.get():
-                    messagebox.showinfo('Password changed successfully <3')
-                    P4.destroy()
-                else:
-                    messagebox.showerror('Please enter the same password [:')
-            Done1=Button(P4,text='Done',command=Done1).pack()
-        else:
-            messagebox.showerror('Incorrect answer. Try again </3')
-    Done=Button(P3,text='Done',command=Done).pack()   
-Forgot=Button(P,text="Forgot Password?",command=F)
-Forgot.place(x=270,y=80)
+
 mainloop()
