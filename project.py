@@ -28,7 +28,6 @@ def L():
         Label(P3,text="Who's logging in?").pack()
         def V():
             messagebox.showinfo('Verification','Login was successful <3')
-            messagebox.showinfo('hi','hi')
             P3.destroy()
         def V1():
             P4=Toplevel()
