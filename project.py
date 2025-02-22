@@ -1,143 +1,212 @@
 from tkinter import *
 from tkinter import messagebox
-import random
 
-P=Tk()
+P = Tk()
 P.geometry("400x250")
 P.title("Login and Registration")
-
-
-a=Label(P,text='Username : ')
+a = Label(P, text='Username : ')
 a.pack()
-User=Entry(P)
+User = Entry(P)
 User.pack()
-b=Label(P,text='Password : ')
+b = Label(P, text='Password : ')
 b.pack()
-Pass=Entry(P,show=('*'))
+Pass = Entry(P, show=('*'))
 Pass.pack()
-account={}
+account = {}
 # To enter username and password
-
 def L():
-    username=User.get()
-    password=Pass.get()
-    if username in account and account[username]==password:
-        P3=Toplevel()
+    username = User.get()
+    password = Pass.get()
+    if username in account and account[username] == password:
+        # Create a new window (Toplevel) for login success
+        P3 = Toplevel()
         P3.geometry("400x250")
         P3.title('Verification')
-        Label(P3,text="Who's logging in?").pack()
+        Label(P3, text="Who's logging in?").pack()
+
         def V():
-            messagebox.showinfo('Verification','Login was successful <3')
+            messagebox.showinfo('Verification', 'Login was successful <3')
             P3.destroy()
+            customer_page()  # Open customer page after successful login
+
         def V1():
-            P4=Toplevel()
+            P4 = Toplevel()
             P4.geometry("400x250")
             P4.title('Verification')
-            Label(P4,text="Enter PIN :").pack()
-            pin=Entry(P4)
+            Label(P4, text="Enter PIN :").pack()
+            pin = Entry(P4)
             pin.pack()
-            P3.destroy()
+
             def Pin():
                 if pin.get() == '12345':
-                    messagebox.showinfo('Verification','Login was successful <3')
+                    messagebox.showinfo('Verification', 'Login was successful <3')
+                    P.destroy()
                     P4.destroy()
-
-
+                    employee_page()  # Open employee page after successful PIN entry
                 else:
-                    messagebox.showerror('Verification','Invalid PIN </3')
-            Enter=Button(P4,text='Enter',command=Pin)
+                    messagebox.showerror('Verification', 'Invalid PIN </3')
+
+            Enter = Button(P4, text='Enter', command=Pin)
             Enter.pack()
-        Customer=Button(P3,text='Customer',command=V)
+
+        Customer = Button(P3, text='Customer', command=V)
         Customer.pack()
-        Employee=Button(P3,text='Employee',command=V1)
+        Employee = Button(P3, text='Employee', command=V1)
         Employee.pack()
-        
+
     elif username == "" or password == "":
-        messagebox.showerror('Login','Please enter both username and password [:')
+        messagebox.showerror('Login', 'Please enter both username and password [:')
     else:
-        messagebox.showerror('Login','Entered username or password was incorrect </3')
-Log=Button(P,text="Login",command=L)
+        messagebox.showerror('Login', 'Entered username or password was incorrect </3')
+
+Log = Button(P, text="Login", command=L)
 Log.pack()
 # For logging in
 
-s=IntVar()
+s = IntVar()
 def S():
-    if  s.get() == 1:
+    if s.get() == 1:
         Pass.config(show="")
     else:
         Pass.config(show="*")
-see=Checkbutton(P,text='Show',command=S,variable=s)
-see.place(x=270,y=63)
+see = Checkbutton(P, text='Show', command=S, variable=s)
+see.place(x=270, y=63)
 # For letting the user see the password they enter
 
 def R():
-    P1=Toplevel()
+    P1 = Toplevel()
     P1.geometry("400x250")
     P1.title('Registration')
-    f=Label(P1,text='First Name :')
+    f = Label(P1, text='First Name :')
     f.pack()
-    FName=Entry(P1)
+    FName = Entry(P1)
     FName.pack()
-    l=Label(P1,text='Last Name :')
+    l = Label(P1, text='Last Name :')
     l.pack()
-    LName=Entry(P1)
+    LName = Entry(P1)
     LName.pack()
-    u=Label(P1,text='Username :')
+    u = Label(P1, text='Username :')
     u.pack()
-    RUser=Entry(P1)
+    RUser = Entry(P1)
     RUser.pack()
-    p=Label(P1,text='Password :')
+    p = Label(P1, text='Password :')
     p.pack()
-    RPass=Entry(P1)
+    RPass = Entry(P1)
     RPass.pack()
-    cp=Label(P1,text='Confirm Password :')
+    cp = Label(P1, text='Confirm Password :')
     cp.pack()
-    CPass=Entry(P1)
+    CPass = Entry(P1)
     CPass.pack()
+
     def r():
         if CPass.get() != RPass.get():
-            messagebox.showerror('Register',"The two entered passwords must be same [:")
-        elif FName.get()=="" or LName.get()=="" or RUser.get()=="" or RPass.get()=="" or CPass.get()=="":
-            messagebox.showerror('Register','Please fill all the credentials [:')
-        elif RUser.get() in account and account[RUser.get()]==RPass.get():
-            messagebox.showerror('Register','Account already exists [:')
+            messagebox.showerror('Register', "The two entered passwords must be same [:")
+        elif FName.get() == "" or LName.get() == "" or RUser.get() == "" or RPass.get() == "" or CPass.get() == "":
+            messagebox.showerror('Register', 'Please fill all the credentials [:')
+        elif RUser.get() in account and account[RUser.get()] == RPass.get():
+            messagebox.showerror('Register', 'Account already exists [:')
         else:
-            account[RUser.get()]= RPass.get()
+            account[RUser.get()] = RPass.get()
             P1.destroy()
-        # For registration
 
-            P2=Toplevel()
+            # Security Questions page
+            P2 = Toplevel()
             P2.geometry("400x250")
             P2.title('Security Questions')
-            Label(P2,text='Please answer the following security questions :').pack()
-            Label(P2,text='1. What is your favorite food?').pack()
+            Label(P2, text='Please answer the following security questions :').pack()
+            Label(P2, text='1. What is your favorite food?').pack()
             global ff
-            ff=Entry(P2)
+            ff = Entry(P2)
             ff.pack()
-            Label(P2,text='2. What is your favorite animal?').pack()
+            Label(P2, text='2. What is your favorite animal?').pack()
             global fa
-            fa=Entry(P2)
+            fa = Entry(P2)
             fa.pack()
-            Label(P2,text='3. What is your favorite color?').pack()
+            Label(P2, text='3. What is your favorite color?').pack()
             global fc
-            fc=Entry(P2)
+            fc = Entry(P2)
             fc.pack()
-            Label(P2,text='Note : These security questions help us identify you incase you forget your password or decide to change it so please answer carefully <3').pack()
+            Label(P2, text='Note: These security questions help us identify you incase you forget your password or decide to change it so please answer carefully <3').pack()
+
             def complete():
-                if ff.get()=="" or fa.get()=="" or fc.get()=="":
+                if ff.get() == "" or fa.get() == "" or fc.get() == "":
                     messagebox.showerror('Please answer all the questions [:')
                 else:
-                    messagebox.showinfo('Register','Registration was successful <3')
+                    messagebox.showinfo('Register', 'Registration was successful <3')
                     P2.destroy()
-            Done=Button(P2,text='Done',command=complete).pack()
+
+            Done = Button(P2, text='Done', command=complete).pack()
             # For security questions
 
-    Register=Button(P1,text='Register',command=r).pack()
-c=Label(P,text="Don't have an account?")
+    Register = Button(P1, text='Register', command=r).pack()
+
+c = Label(P, text="Don't have an account?")
 c.pack()
-Register=Button(P,text="Register Now!",command=R)
-Register.place(x=263,y=103)
+Register = Button(P, text="Register Now!", command=R)
+Register.place(x=263, y=103)
 # Make a new account
 
+
+# Create a Customer page
+def customer_page():
+    customer_win = Tk()
+    customer_win.geometry("600x600")
+    customer_win.title("Bakery products")
+    products = [
+        {'name': 'Pancake', 'price': 200},
+        {'name': 'Strawberry Cake', 'price': 500},
+        {'name': 'Chocolate Cake', 'price': 1000},
+        {'name': 'Fruit cake', 'price': 200},
+        {'name': 'Cupcake', 'price': 300},
+    ]
+    cart = []
+    def add_to_cart(product):
+        cart.append(product)
+        update_cart()
+    def update_cart():
+        for widget in cart_list.winfo_children():
+            widget.destroy()
+        for item in cart:
+            item_label = Label(cart_list, text=f"{item['name']} ${item['price']}")
+            item_label.pack()
+        total = sum(item['price'] for item in cart)
+        total_label.config(text=f"Total: ${total}")
+    def buy():
+        if cart:
+            total = sum(item['price'] for item in cart)
+            messagebox.showinfo("Buy", f"Total: ${total}")
+            cart.clear()
+            update_cart() 
+        else:
+            messagebox.showwarning("Empty Cart", "Please add items.")
+    def clear_cart():
+        cart.clear()
+        update_cart()
+    product_list_frame = Frame(customer_win)
+    product_list_frame.pack()
+    for product in products:
+        product_frame = Frame(product_list_frame)
+        product_frame.pack()
+        product_lbl = Label(product_frame, text=f"{product['name']} - ${product['price']}")
+        product_lbl.pack(side=LEFT)
+        add_button = Button(product_frame, text="Add to Cart", command=lambda p=product: add_to_cart(p))
+        add_button.pack(side=RIGHT)
+    cart_list = Frame(customer_win)
+    cart_list.pack()
+    total_label = Label(customer_win, text="Total: $0", font=("Arial", 14))
+    total_label.pack(side=BOTTOM)
+    buy_button = Button(customer_win, text="Buy", command=buy)
+    buy_button.pack(side=BOTTOM)
+    clear_cart = Button(customer_win, text="Clear Cart", command=clear_cart)
+    clear_cart.pack(side=BOTTOM)
+    
+
+# Create an Employee page
+def employee_page():
+    employee_win = Toplevel()
+    employee_win.geometry("400x250")
+    employee_win.title("Employee Page")
+    Label(employee_win, text="Welcome to the Employee Page!", font=("Arial", 14)).pack(pady=30)
+    Button(employee_win, text="Logout", command=employee_win.destroy).pack()
 
 mainloop()
