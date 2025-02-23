@@ -161,15 +161,21 @@ def customer_page():
     ]
     cart = []
     def add_to_cart(product):
-        cart.append(product)
+        for item in cart:
+            if item['name'] == product['name']:
+                item['quantity'] += 1
+                update_cart()
+                return
+        cart.append({'name': product['name'], 'price': product['price'], 'quantity': 1})
         update_cart()
     def update_cart():
         for widget in cart_list.winfo_children():
             widget.destroy()
+            total=0
         for item in cart:
-            item_label = Label(cart_list, text=f"{item['name']} ${item['price']}")
-            item_label.pack()
-        total = sum(item['price'] for item in cart)
+            item_label = Label(cart_list, text=f"{item['name']} - {item['quantity']} x ${item['price']} = ${item['quantity'] * item['price']}")
+            item_label.pack(side=BOTTOM)
+            total += item['quantity'] * item['price']
         total_label.config(text=f"Total: ${total}")
     def buy():
         if cart:
@@ -184,21 +190,27 @@ def customer_page():
         update_cart()
     product_list_frame = Frame(customer_win)
     product_list_frame.pack()
-    for product in products:
+    for i, product in enumerate(products):
         product_frame = Frame(product_list_frame)
-        product_frame.pack()
+        product_frame.grid(row=0, column=i, padx=10) 
         product_lbl = Label(product_frame, text=f"{product['name']} - ${product['price']}")
-        product_lbl.pack(side=LEFT)
+        product_lbl.pack(side=TOP)
         add_button = Button(product_frame, text="Add to Cart", command=lambda p=product: add_to_cart(p))
-        add_button.pack(side=RIGHT)
-    cart_list = Frame(customer_win)
-    cart_list.pack()
-    total_label = Label(customer_win, text="Total: $0", font=("Arial", 14))
-    total_label.pack(side=BOTTOM)
+        add_button.pack(side=BOTTOM)
+    cart_frame = Frame(customer_win, bd=2, relief="solid", padx=10, pady=10)
+    cart_frame.pack(pady=20, fill="both", expand=True)
+    cart_label =Label(cart_frame, text="Your Cart", font=("Arial", 16, "bold"))
+    cart_label.pack()
+    cart_list =Frame(cart_frame)
+    cart_list.pack(pady=10, fill="both", expand=True)
+    clear_cart_button =Button(customer_win, text="Clear Cart", command=clear_cart)
+    clear_cart_button.pack(side=BOTTOM, pady=10)
     buy_button = Button(customer_win, text="Buy", command=buy)
-    buy_button.pack(side=BOTTOM)
-    clear_cart = Button(customer_win, text="Clear Cart", command=clear_cart)
-    clear_cart.pack(side=BOTTOM)
+    buy_button.pack(side=BOTTOM, pady=10)
+    total_label = Label(customer_win, text="Total: $0", font=("Arial", 14))
+    total_label.pack(side=BOTTOM, pady=10)
+    customer_win.mainloop()
+
     
 
 # Create an Employee page
