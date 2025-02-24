@@ -80,7 +80,7 @@ def L():
     elif username == "" or password == "":
         messagebox.showerror('Login','Please enter both username and password [:')
     else:
-        messagebox.showerror('Login','BITCH get some life')
+        messagebox.showerror('Login','Entered username or password was incorrect')
 Log=Button(P,text="Login",command=L, bg='#f5be0a', fg="#000000", font=("Arial", 10))
 Log.pack(pady=6)
 # For logging in
