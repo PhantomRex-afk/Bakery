@@ -70,7 +70,6 @@ def L():
             def Pin():
                 if pin.get() == '12345':
                     messagebox.showinfo('Verification', 'Login was successful <3')
-                    P.destroy()
                     P4.destroy()
                     employee_page()
 
@@ -274,18 +273,78 @@ def employee_page():
     employee_win = Toplevel()
     employee_win.geometry("400x250")
     employee_win.title("Employee Page")
-    Label(employee_win, text="Customer's Purchase Details", font=("Arial", 16, "bold")).pack(pady=10)
-    if cart:
-        total_cost = 0
-        for item in cart:
-            item_label = Label(employee_win, text=f"{item['name']} - {item['quantity']} x ${item['price']} = ${item['quantity'] * item['price']}")
-            item_label.pack(pady=5)
-            total_cost += item['quantity'] * item['price']
-        total_label = Label(employee_win, text=f"Total: ${total_cost}", font=("Arial", 14, "bold"))
-        total_label.pack(pady=10)
-    else:
-        Label(employee_win, text="No items purchased yet.", font=("Arial", 12)).pack(pady=10)
+    options=Frame(employee_win,bg="#c3c3c3")
+    options.pack(side=LEFT)
+    options.configure(width=100, height=250)
+    main=Frame(employee_win)
+    main.pack(side=LEFT)
+    main.configure(width=400,height=250)
+
+    def PStock():
+        SFrame=Frame(main)
+        SFrame.pack(pady=20)
+        Label(SFrame, text="Stock Management", font=("Arial", 14, "bold")).pack()
+        Button(SFrame, text="Add Item", command=lambda: print("Add item")).pack(pady=5)
+        Button(SFrame, text="Update Item", command=lambda: print("Update item")).pack(pady=5)
+        Button(SFrame, text="Delete Item", command=lambda: print("Delete item")).pack(pady=5)
+
+
+
+    def POrder():
+        OFrame=Frame(main)
+        OFrame.pack(pady=20)
+        Label(OFrame, text="Customer's Purchase Details", font=("Arial", 16, "bold")).pack(pady=10)
+        if cart:
+            total_cost = 0
+            for item in cart:
+                item_label = Label(OFrame, text=f"{item['name']} - {item['quantity']} x ${item['price']} = ${item['quantity'] * item['price']}")
+                item_label.pack(pady=5)
+                total_cost += item['quantity'] * item['price']
+            total_label = Label(OFrame, text=f"Total: ${total_cost}", font=("Arial", 14, "bold"))
+            total_label.pack(pady=10)
+        else:
+            Label(OFrame, text="No items purchased yet.", font=("Arial", 12)).pack(pady=10)
+
+
+    def PLogout():
+        LFrame=Frame(main)
+        LFrame.pack(pady=20) 
+        Button(LFrame, text="Logout", command=main.destroy).pack()   
+
     
-    Button(employee_win, text="Logout", command=employee_win.destroy).pack()
+    def destroy():
+        for frame in main.winfo_children():
+            frame.destroy()
+        
+    
+    
+    
+    def hide():
+        IStock.config(bg="#c3c3c3")
+        ICustomer_order.config(bg="#c3c3c3")
+        ILogout.config(bg="#c3c3c3")
+    
+    
+    def indicator(lb, page):
+        hide()
+        lb.config(bg="#158aff")
+        destroy()
+        page()
+    
+    
+    Stock=Button(employee_win,text='Stock',bg="#c3c3c3",command=lambda :indicator(IStock,PStock))
+    Stock.place(x=10,y=50)
+    IStock=Label(employee_win,text=" ",bg="#c3c3c3")
+    IStock.place(x=3,y=50,width=5,height=30)
+    Customer_order=Button(employee_win,text='Orders',bg="#c3c3c3",command=lambda :indicator(ICustomer_order,POrder))
+    Customer_order.place(x=10,y=100)
+    ICustomer_order=Label(employee_win,text=" ",bg="#c3c3c3")
+    ICustomer_order.place(x=3,y=100,width=5,height=30)
+    Logout=Button(employee_win,text='Logout',bg="#c3c3c3",command=lambda :indicator(ILogout,PLogout))
+    Logout.place(x=10,y=150)
+    ILogout=Label(employee_win,text=" ",bg="#c3c3c3")
+    ILogout.place(x=3,y=150,width=5,height=30)
+
+
 
 mainloop()
