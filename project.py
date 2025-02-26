@@ -69,7 +69,7 @@ def L():
             P3.destroy()
             def Pin():
                 if pin.get() == '12345':
-                    messagebox.showinfo('Verification','Login was successful <3')
+                    messagebox.showinfo('Verification', 'Login was successful <3')
                     P.destroy()
                     P4.destroy()
                     employee_page()
@@ -188,68 +188,84 @@ Register=Button(P,text="Register Now!",command=R, bg='#f5be0a', fg="#000000", fo
 Register.place(x=280,y=150)
 # Make a new account
 # Create a Customer page
+cart=[]
 def customer_page():
     customer_win = Tk()
     customer_win.geometry("600x600")
     customer_win.title("Bakery products")
+    global cart
     products = [
-        {'name': 'Pancake', 'price': 200},
-        {'name': 'Strawberry Cake', 'price': 500},
-        {'name': 'Chocolate Cake', 'price': 1000},
-        {'name': 'Fruit cake', 'price': 200},
-        {'name': 'Cupcake', 'price': 300},
-    ]
-    cart = []
+        {'name': 'Pancake', 'price': 200, 'quantity': 1},
+        {'name': 'Strawberry Cake', 'price': 500, 'quantity': 1},
+        {'name': 'Chocolate Cake', 'price': 1000, 'quantity': 1},
+        {'name': 'Fruit cake', 'price': 200, 'quantity': 1}  
+    ]   
     def add_to_cart(product):
+        global cart
         for item in cart:
             if item['name'] == product['name']:
-                item['quantity'] += 1
+                item['quantity'] += product['quantity']
                 update_cart()
                 return
-        cart.append({'name': product['name'], 'price': product['price'], 'quantity': 1})
+        cart.append({'name': product['name'], 'price': product['price'], 'quantity': product['quantity']})
         update_cart()
     def update_cart():
         for widget in cart_list.winfo_children():
             widget.destroy()
-            total=0
+        total = 0
         for item in cart:
             item_label = Label(cart_list, text=f"{item['name']} - {item['quantity']} x ${item['price']} = ${item['quantity'] * item['price']}")
             item_label.pack(side=BOTTOM)
             total += item['quantity'] * item['price']
         total_label.config(text=f"Total: ${total}")
+    def change_quantity(product, delta):
+        if product['quantity'] + delta >= 0:
+            product['quantity'] += delta
+            update_product_list()
+    def update_product_list():
+        for i, product in enumerate(products):
+            product_lbl = product_labels[i]
+            product_lbl.config(text=f"{product['name']} - ${product['price']} | Quantity: {product['quantity']}")
     def buy():
+        global cart
         if cart:
-            total = sum(item['price'] for item in cart)
+            total = sum(item['price'] * item['quantity'] for item in cart)
             messagebox.showinfo("Buy", f"Total: ${total}")
             cart.clear()
-            update_cart() 
+            update_cart()
         else:
             messagebox.showwarning("Empty Cart", "Please add items.")
     def clear_cart():
+        global cart
         cart.clear()
         update_cart()
     product_list_frame = Frame(customer_win)
     product_list_frame.pack()
+    product_labels = []
     for i, product in enumerate(products):
         product_frame = Frame(product_list_frame)
-        product_frame.grid(row=0, column=i, padx=10) 
-        product_lbl = Label(product_frame, text=f"{product['name']} - ${product['price']}")
+        product_frame.grid(row=0, column=i, padx=10)
+        product_lbl = Label(product_frame, text=f"{product['name']} - ${product['price']} | Quantity:{product['quantity']}")
         product_lbl.pack(side=TOP)
-        add_button = Button(product_frame, text="Add to Cart", command=lambda p=product: add_to_cart(p))
-        add_button.pack(side=BOTTOM)
+        increase_button = Button(product_frame, text="+", command=lambda p=product: change_quantity(p, 1), bg="#f5be0a")
+        increase_button.pack(side=LEFT, padx=5)
+        decrease_button = Button(product_frame, text="-", command=lambda p=product: change_quantity(p, -1), bg="#f5be0a")
+        decrease_button.pack(side=LEFT, padx=5)
+        add_button = Button(product_frame, text="Add to Cart", command=lambda p=product: add_to_cart(p), bg="#f5be0a")
+        add_button.pack(side=LEFT, padx=5)
+        product_labels.append(product_lbl)
     cart_frame = Frame(customer_win, bd=2, relief="solid", padx=10, pady=10)
     cart_frame.pack(pady=20, fill="both", expand=True)
-    cart_label =Label(cart_frame, text="Your Cart", font=("Arial", 16, "bold"))
+    cart_label = Label(cart_frame, text="Your Cart", font=("Arial", 16, "bold"))
     cart_label.pack()
-    cart_list =Frame(cart_frame)
+    cart_list = Frame(cart_frame)
     cart_list.pack(pady=10, fill="both", expand=True)
-    clear_cart_button =Button(customer_win, text="Clear Cart", command=clear_cart)
+    clear_cart_button = Button(customer_win, text="Clear Cart", command=clear_cart)
     clear_cart_button.pack(side=BOTTOM, pady=10)
     buy_button = Button(customer_win, text="Buy", command=buy)
     buy_button.pack(side=BOTTOM, pady=10)
     total_label = Label(customer_win, text="Total: $0", font=("Arial", 14))
     total_label.pack(side=BOTTOM, pady=10)
-    customer_win.mainloop()
 
     
 
@@ -258,7 +274,18 @@ def employee_page():
     employee_win = Toplevel()
     employee_win.geometry("400x250")
     employee_win.title("Employee Page")
-    Label(employee_win, text="Welcome to the Employee Page!", font=("Arial", 14)).pack(pady=30)
+    Label(employee_win, text="Customer's Purchase Details", font=("Arial", 16, "bold")).pack(pady=10)
+    if cart:
+        total_cost = 0
+        for item in cart:
+            item_label = Label(employee_win, text=f"{item['name']} - {item['quantity']} x ${item['price']} = ${item['quantity'] * item['price']}")
+            item_label.pack(pady=5)
+            total_cost += item['quantity'] * item['price']
+        total_label = Label(employee_win, text=f"Total: ${total_cost}", font=("Arial", 14, "bold"))
+        total_label.pack(pady=10)
+    else:
+        Label(employee_win, text="No items purchased yet.", font=("Arial", 12)).pack(pady=10)
+    
     Button(employee_win, text="Logout", command=employee_win.destroy).pack()
 
 mainloop()
